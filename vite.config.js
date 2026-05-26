@@ -22,7 +22,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'doc',
+    outDir: 'docs',
     sourcemap: false,
     chunkSizeWarningLimit: 1500
   }
