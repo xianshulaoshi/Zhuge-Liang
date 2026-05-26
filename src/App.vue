@@ -436,10 +436,6 @@ body {
   position: relative;
 }
 
-.title-char:nth-child(3) {
-  color: var(--color-gold);
-}
-
 @keyframes titleCharIn {
   0% {
     opacity: 0;
