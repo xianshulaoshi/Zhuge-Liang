@@ -18,10 +18,8 @@ const quotes = [
   { text: "苟全性命于乱世，不求闻达于诸侯", source: "出师表" },
 ];
 
-// 当前名句
 const currentQuote = computed(() => quotes[activeQuote.value]);
 
-// 名句轮播
 let quoteTimer = null;
 function startQuoteRotation() {
   quoteTimer = setInterval(() => {
@@ -29,7 +27,6 @@ function startQuoteRotation() {
   }, 8000);
 }
 
-// 加载历史记录
 function loadRecords() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -41,7 +38,6 @@ function loadRecords() {
   }
 }
 
-// 保存历史记录
 function saveRecords() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(worshipRecords.value));
@@ -50,7 +46,6 @@ function saveRecords() {
   }
 }
 
-// 处理祭拜事件
 function handleWorship(record) {
   worshipRecords.value.unshift(record);
   saveRecords();
@@ -59,7 +54,6 @@ function handleWorship(record) {
 onMounted(() => {
   loadRecords();
   startQuoteRotation();
-  // 入场动画延迟
   setTimeout(() => {
     showContent.value = true;
   }, 300);
@@ -68,22 +62,23 @@ onMounted(() => {
 
 <template>
   <div class="shrine-app" :class="{ visible: showContent }">
-    <!-- 背景装饰 -->
+    <!-- 背景装饰：宣纸 + 远山 + 浮萤 -->
     <div class="bg-layer">
-      <div class="bg-grid"></div>
-      <div class="bg-glow bg-glow-1"></div>
-      <div class="bg-glow bg-glow-2"></div>
+      <div class="bg-paper"></div>
+      <div class="bg-mist bg-mist-1"></div>
+      <div class="bg-mist bg-mist-2"></div>
+      <div class="bg-mist bg-mist-3"></div>
       <div class="floating-particles">
         <span
-          v-for="i in 20"
+          v-for="i in 18"
           :key="i"
           class="float-particle"
           :style="{
-            '--size': `${Math.random() * 3 + 1}px`,
+            '--size': `${Math.random() * 2 + 1}px`,
             '--left': `${Math.random() * 100}%`,
-            '--delay': `${Math.random() * 10}s`,
-            '--duration': `${Math.random() * 15 + 10}s`,
-            '--opacity': Math.random() * 0.3 + 0.1,
+            '--delay': `${Math.random() * 12}s`,
+            '--duration': `${Math.random() * 18 + 14}s`,
+            '--opacity': Math.random() * 0.18 + 0.06,
           }"
         ></span>
       </div>
@@ -100,12 +95,17 @@ onMounted(() => {
           <span class="title-char" style="--i: 3">侯</span>
           <span class="title-char" style="--i: 4">祠</span>
         </h1>
-        <p class="shrine-subtitle">千古风流 精神永存</p>
+        <p class="shrine-subtitle">千古风流&nbsp;&nbsp;精神永存</p>
       </header>
 
       <!-- 武侯殿 -->
       <section class="shrine-hall">
         <div class="hall-frame">
+          <span class="corner corner-tl"></span>
+          <span class="corner corner-tr"></span>
+          <span class="corner corner-bl"></span>
+          <span class="corner corner-br"></span>
+
           <!-- 牌位区域 -->
           <div class="spirit-tablet-section">
             <div class="tablet-frame">
@@ -123,7 +123,7 @@ onMounted(() => {
             <!-- 名号 -->
             <div class="tablet-title">
               <span class="title-name">诸葛亮</span>
-              <span class="title-dates">公元181 — 234</span>
+              <span class="title-dates">公元 181 — 234</span>
             </div>
           </div>
 
@@ -131,9 +131,11 @@ onMounted(() => {
           <div class="quote-section">
             <Transition name="quote" mode="out-in">
               <div class="quote-card" :key="activeQuote">
+                <span class="quote-quote-mark">「</span>
                 <p class="quote-text">{{ currentQuote.text }}</p>
+                <span class="quote-quote-mark end">」</span>
                 <span class="quote-source"
-                  >&#x2014;&#x2014; {{ currentQuote.source }}</span
+                  >&#x2014;&#x2014;&nbsp;{{ currentQuote.source }}</span
                 >
               </div>
             </Transition>
@@ -168,7 +170,7 @@ onMounted(() => {
       <!-- 页脚 -->
       <footer class="shrine-footer">
         <div class="footer-line"></div>
-        <p class="footer-text">赛博武侯祠 — 千载忠魂，数字永存</p>
+        <p class="footer-text">赛博武侯祠 — 千载忠魂&nbsp;&nbsp;数字永存</p>
         <p class="footer-sub">
           Cyber Wuhou Shrine &copy; {{ new Date().getFullYear() }}
         </p>
@@ -178,15 +180,23 @@ onMounted(() => {
 </template>
 
 <style>
-/* 全局 CSS 变量与基础样式 */
+/* 全局 CSS 变量：清雅水墨配色 */
 :root {
-  --color-bg: #0a0a0f;
-  --color-surface: #111118;
-  --color-gold: #d4af37;
-  --color-gold-dim: rgba(212, 175, 55, 0.6);
-  --color-text: #c8b88a;
-  --color-text-muted: #8a7d5f;
-  --color-border: rgba(212, 175, 55, 0.12);
+  --color-bg: #f4efe6;            /* 宣纸底 */
+  --color-bg-soft: #ebe3d4;       /* 浅米卡其 */
+  --color-surface: #faf6ee;       /* 浮纸面 */
+  --color-ink: #2a2620;           /* 墨色主文字 */
+  --color-ink-soft: #5a4f3f;      /* 淡墨 */
+  --color-ink-mute: #8a7d68;      /* 远墨 */
+  --color-gold: #a37a3a;          /* 古铜金，含蓄 */
+  --color-gold-soft: #c8a566;     /* 浅金 */
+  --color-gold-faint: rgba(163, 122, 58, 0.18);
+  --color-cinnabar: #9a4b3b;      /* 朱砂胭脂 */
+  --color-celadon: #6b8a7a;       /* 青瓷绿 */
+  --color-border: rgba(90, 79, 63, 0.14);
+  --color-border-soft: rgba(90, 79, 63, 0.08);
+  --shadow-soft: 0 1px 2px rgba(60, 50, 35, 0.04),
+    0 8px 24px rgba(60, 50, 35, 0.05);
 }
 
 * {
@@ -201,27 +211,31 @@ html {
 
 body {
   background: var(--color-bg);
-  color: var(--color-text);
-  font-family: "Noto Serif SC", "Songti SC", serif;
+  color: var(--color-ink);
+  font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  font-weight: 400;
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
-  border-radius: 2px;
+  background: rgba(163, 122, 58, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 122, 58, 0.35);
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.3);
-  color: var(--color-gold);
+  background: rgba(163, 122, 58, 0.18);
+  color: var(--color-cinnabar);
 }
 </style>
 
@@ -231,14 +245,14 @@ body {
   min-height: 100vh;
   position: relative;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 1.2s ease;
 }
 
 .shrine-app.visible {
   opacity: 1;
 }
 
-/* 背景层 */
+/* 背景层：宣纸纹 + 雾霭 */
 .bg-layer {
   position: fixed;
   inset: 0;
@@ -246,55 +260,82 @@ body {
   z-index: 0;
 }
 
-.bg-grid {
+.bg-paper {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-      rgba(212, 175, 55, 0.03) 1px,
-      transparent 1px
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(
+      ellipse at 20% 10%,
+      rgba(255, 248, 232, 0.6) 0%,
+      transparent 55%
     ),
-    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
-  -webkit-mask-image: radial-gradient(
-    ellipse at center,
-    black 30%,
-    transparent 70%
-  );
+    radial-gradient(
+      ellipse at 80% 100%,
+      rgba(212, 195, 160, 0.18) 0%,
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(120, 95, 60, 0.018) 0px,
+      rgba(120, 95, 60, 0.018) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(120, 95, 60, 0.012) 0px,
+      rgba(120, 95, 60, 0.012) 1px,
+      transparent 1px,
+      transparent 5px
+    );
 }
 
-.bg-glow {
+.bg-mist {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(90px);
+  opacity: 0.55;
 }
 
-.bg-glow-1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
+.bg-mist-1 {
+  width: 480px;
+  height: 480px;
+  top: -120px;
   left: 50%;
   transform: translateX(-50%);
   background: radial-gradient(
     circle,
-    rgba(212, 175, 55, 0.06) 0%,
+    rgba(200, 165, 102, 0.18) 0%,
     transparent 70%
   );
 }
 
-.bg-glow-2 {
-  width: 300px;
-  height: 300px;
-  bottom: 10%;
-  right: -50px;
+.bg-mist-2 {
+  width: 360px;
+  height: 360px;
+  bottom: 8%;
+  right: -80px;
   background: radial-gradient(
     circle,
-    rgba(139, 105, 20, 0.04) 0%,
+    rgba(107, 138, 122, 0.14) 0%,
     transparent 70%
   );
 }
 
-/* 浮动粒子 */
+.bg-mist-3 {
+  width: 320px;
+  height: 320px;
+  top: 40%;
+  left: -60px;
+  background: radial-gradient(
+    circle,
+    rgba(154, 75, 59, 0.08) 0%,
+    transparent 70%
+  );
+}
+
+/* 浮萤 */
 .floating-particles {
   position: absolute;
   inset: 0;
@@ -307,9 +348,10 @@ body {
   left: var(--left);
   width: var(--size);
   height: var(--size);
-  background: var(--color-gold);
+  background: var(--color-gold-soft);
   border-radius: 50%;
   opacity: var(--opacity);
+  box-shadow: 0 0 6px rgba(200, 165, 102, 0.35);
   animation: floatUp var(--duration) var(--delay) linear infinite;
 }
 
@@ -318,14 +360,10 @@ body {
     transform: translateY(0) translateX(0);
     opacity: 0;
   }
-  10% {
-    opacity: var(--opacity);
-  }
-  90% {
-    opacity: var(--opacity);
-  }
+  10% { opacity: var(--opacity); }
+  90% { opacity: var(--opacity); }
   100% {
-    transform: translateY(-100vh) translateX(20px);
+    transform: translateY(-100vh) translateX(30px);
     opacity: 0;
   }
 }
@@ -336,157 +374,170 @@ body {
   z-index: 1;
   max-width: 680px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.75rem;
 }
 
 /* 祠门 Header */
 .shrine-header {
   text-align: center;
-  padding: 3rem 0 2rem;
+  padding: 2.5rem 0 2rem;
 }
 
-.header-ornament {
-  width: 200px;
-  height: 20px;
-  margin: 0 auto;
-  position: relative;
+.header-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.top-ornament::before {
-  content: "┋";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  color: var(--color-gold-dim);
-  font-size: 0.6rem;
-  letter-spacing: 15px;
+.seal-line {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(163, 122, 58, 0.4),
+    transparent
+  );
 }
 
-.bottom-ornament::before {
-  content: "━ ━ ━ ☙ ❧ ━ ━ ━";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  color: rgba(212, 175, 55, 0.3);
-  font-size: 0.6rem;
-  letter-spacing: 3px;
-  white-space: nowrap;
+.seal-mark {
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  color: var(--color-cinnabar);
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  border: 1px solid rgba(154, 75, 59, 0.4);
+  padding: 0.15rem 0.45rem;
+  border-radius: 2px;
+  background: rgba(154, 75, 59, 0.04);
+  opacity: 0.85;
 }
 
 .shrine-title {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 3.2rem;
-  color: var(--color-gold);
-  letter-spacing: 0.4em;
-  margin: 1rem 0;
-  text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  font-size: 3rem;
+  color: var(--color-ink);
+  letter-spacing: 0.45em;
+  margin: 0.5rem 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
   display: flex;
   justify-content: center;
+  font-weight: 400;
 }
 
 .title-char {
   display: inline-block;
-  animation: titleCharIn 0.8s calc(var(--i) * 0.12s) both ease-out;
+  animation: titleCharIn 0.9s calc(var(--i) * 0.13s) both ease-out;
+  position: relative;
 }
 
 @keyframes titleCharIn {
   0% {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-16px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
 }
 
 .shrine-subtitle {
   font-family: "Noto Serif SC", serif;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  letter-spacing: 0.5em;
-  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-mute);
+  letter-spacing: 0.55em;
+  margin-top: 0.75rem;
+  font-weight: 300;
 }
 
 /* 武侯殿 */
 .shrine-hall {
-  padding: 1rem 0 2rem;
+  padding: 1.25rem 0 2rem;
 }
 
 .hall-frame {
-  background: rgba(255, 255, 255, 0.01);
+  background:
+    linear-gradient(180deg, rgba(250, 246, 238, 0.85), rgba(244, 239, 230, 0.7));
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 2.5rem 1.5rem;
+  border-radius: 4px;
+  padding: 3rem 1.75rem 2.5rem;
   position: relative;
-  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(2px);
 }
 
 .hall-frame::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-gold),
-    transparent
-  );
+  inset: 6px;
+  border: 1px solid rgba(163, 122, 58, 0.12);
+  border-radius: 2px;
+  pointer-events: none;
 }
 
-.hall-frame::after {
-  content: "";
+/* 四角小装饰 */
+.corner {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(212, 175, 55, 0.3),
-    transparent
-  );
+  width: 14px;
+  height: 14px;
+  border-color: rgba(163, 122, 58, 0.45);
+  border-style: solid;
+  border-width: 0;
+  pointer-events: none;
 }
+.corner-tl { top: 10px; left: 10px; border-top-width: 1px; border-left-width: 1px; }
+.corner-tr { top: 10px; right: 10px; border-top-width: 1px; border-right-width: 1px; }
+.corner-bl { bottom: 10px; left: 10px; border-bottom-width: 1px; border-left-width: 1px; }
+.corner-br { bottom: 10px; right: 10px; border-bottom-width: 1px; border-right-width: 1px; }
 
 /* 牌位 */
 .spirit-tablet-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .tablet-frame {
   position: relative;
-  padding: 3px;
+  padding: 2px;
   background: linear-gradient(
     180deg,
-    rgba(212, 175, 55, 0.35),
-    rgba(212, 175, 55, 0.08) 40%,
-    rgba(212, 175, 55, 0.15)
+    rgba(163, 122, 58, 0.55) 0%,
+    rgba(200, 165, 102, 0.18) 50%,
+    rgba(163, 122, 58, 0.35) 100%
   );
-  border-radius: 4px 4px 2px 2px;
+  border-radius: 6px 6px 3px 3px;
+  box-shadow:
+    0 2px 4px rgba(60, 50, 35, 0.06),
+    0 12px 28px rgba(60, 50, 35, 0.08);
 }
 
 .tablet-inner {
   width: 220px;
-  min-height: 280px;
-  background: linear-gradient(180deg, #14120e 0%, #0f0e0a 30%, #0c0b08 100%);
-  border-radius: 3px 3px 1px 1px;
+  min-height: 290px;
+  background:
+    radial-gradient(ellipse at top, #fbf6ea 0%, #f1e8d2 60%, #e8dcc0 100%);
+  border-radius: 5px 5px 2px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding: 2rem 1.5rem;
+  padding: 2.25rem 1.5rem;
+}
+
+.tablet-inner::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(163, 122, 58, 0.18);
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 .tablet-top-ornament {
@@ -498,7 +549,7 @@ body {
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-top: 10px solid rgba(212, 175, 55, 0.3);
+  border-top: 10px solid rgba(163, 122, 58, 0.4);
 }
 
 .tablet-bottom-ornament {
@@ -506,11 +557,11 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 6px;
+  height: 4px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(212, 175, 55, 0.2),
+    rgba(163, 122, 58, 0.3),
     transparent
   );
 }
@@ -520,76 +571,78 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.1rem;
   flex: 1;
   z-index: 1;
 }
 
 .tablet-header {
   font-family: "Noto Serif SC", serif;
-  font-size: 0.8rem;
-  color: rgba(212, 175, 55, 0.5);
+  font-size: 0.78rem;
+  color: var(--color-gold);
   letter-spacing: 0.4em;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(163, 122, 58, 0.22);
   padding-bottom: 0.6rem;
+  font-weight: 500;
 }
 
 .tablet-center-char {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 4rem;
-  color: var(--color-gold);
-  letter-spacing: 0.3em;
-  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3),
-    0 0 60px rgba(212, 175, 55, 0.1);
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  font-size: 3.6rem;
+  color: var(--color-cinnabar);
+  letter-spacing: 0.25em;
   line-height: 1.2;
-  animation: tabletGlow 4s ease-in-out infinite;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation: tabletGlow 5s ease-in-out infinite;
+  font-weight: 400;
 }
 
 @keyframes tabletGlow {
-  0%,
-  100% {
-    text-shadow: 0 0 30px rgba(212, 175, 55, 0.3),
-      0 0 60px rgba(212, 175, 55, 0.1);
+  0%, 100% {
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5),
+      0 0 18px rgba(154, 75, 59, 0.12);
   }
   50% {
-    text-shadow: 0 0 40px rgba(212, 175, 55, 0.5),
-      0 0 80px rgba(212, 175, 55, 0.2);
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5),
+      0 0 28px rgba(154, 75, 59, 0.22);
   }
 }
 
 .tablet-sub {
   font-family: "Noto Serif SC", serif;
-  font-size: 0.95rem;
-  color: rgba(212, 175, 55, 0.65);
-  letter-spacing: 0.5em;
+  font-size: 0.88rem;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.45em;
+  font-weight: 400;
 }
 
 .tablet-light {
   position: absolute;
-  top: 30%;
+  top: 32%;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   background: radial-gradient(
     circle,
-    rgba(212, 175, 55, 0.08) 0%,
+    rgba(200, 165, 102, 0.18) 0%,
     transparent 70%
   );
   border-radius: 50%;
-  animation: tabletLightPulse 4s ease-in-out infinite;
+  animation: tabletLightPulse 5s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes tabletLightPulse {
-  0%,
-  100% {
-    opacity: 0.4;
+  0%, 100% {
+    opacity: 0.5;
     transform: translateX(-50%) scale(1);
   }
   50% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.3);
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1.25);
   }
 }
 
@@ -598,29 +651,31 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 1.2rem;
+  gap: 0.45rem;
+  margin-top: 1.4rem;
 }
 
 .title-name {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 2.2rem;
-  color: var(--color-gold);
-  letter-spacing: 0.5em;
-  text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  font-size: 1.85rem;
+  color: var(--color-ink);
+  letter-spacing: 0.55em;
+  font-weight: 400;
 }
 
 .title-dates {
-  font-size: 0.75rem;
-  color: rgba(180, 160, 120, 0.4);
-  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  color: var(--color-ink-mute);
+  letter-spacing: 0.25em;
+  font-style: italic;
+  opacity: 0.75;
 }
 
 /* 名句区 */
 .quote-section {
-  max-width: 660px;
-  margin: 0 auto;
-  min-height: 100px;
+  max-width: 560px;
+  margin: 0.5rem auto 0;
+  min-height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -628,51 +683,60 @@ body {
 
 .quote-card {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   position: relative;
 }
 
-.quote-mark {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 2rem;
-  color: rgba(212, 175, 55, 0.2);
+.quote-quote-mark {
+  font-family: "Ma Shan Zheng", "STKaiti", serif;
+  font-size: 1.5rem;
+  color: rgba(163, 122, 58, 0.35);
   line-height: 1;
+  display: inline-block;
+  vertical-align: top;
 }
 
-.quote-mark.end {
-  text-align: right;
+.quote-quote-mark.end {
+  margin-left: 0.2rem;
 }
 
 .quote-text {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 1.5rem;
-  color: var(--color-text);
-  letter-spacing: 0.15em;
-  padding: 0.5rem 0;
-  line-height: 1.8;
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  font-size: 1.4rem;
+  color: var(--color-ink);
+  letter-spacing: 0.18em;
+  padding: 0.4rem 0.4rem;
+  line-height: 1.85;
+  display: inline;
+  font-weight: 400;
 }
 
 .quote-source {
+  display: block;
+  margin-top: 0.85rem;
   font-family: "Noto Serif SC", serif;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  color: var(--color-ink-mute);
+  letter-spacing: 0.15em;
+  font-style: italic;
 }
 
 /* 名句过渡 */
 .quote-enter-active {
-  transition: all 0.6s ease;
+  transition: all 0.7s ease;
 }
 .quote-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.5s ease;
 }
 .quote-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
+  filter: blur(2px);
 }
 .quote-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
+  filter: blur(2px);
 }
 
 /* 分隔线 */
@@ -680,96 +744,100 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1.5rem 0;
+  gap: 0.6rem;
+  padding: 1.75rem 0;
 }
 
 .divider-dot {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(163, 122, 58, 0.4);
 }
 
 .divider-line {
   flex: 1;
-  max-width: 100px;
+  max-width: 110px;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(212, 175, 55, 0.2),
+    rgba(163, 122, 58, 0.28),
     transparent
   );
 }
 
 .divider-ornament {
-  color: rgba(212, 175, 55, 0.25);
-  font-size: 0.7rem;
+  color: rgba(154, 75, 59, 0.45);
+  font-size: 0.72rem;
 }
 
 /* 页脚 */
 .shrine-footer {
   text-align: center;
-  padding: 3rem 0 2rem;
+  padding: 3rem 0 2.5rem;
 }
 
 .footer-line {
-  width: 100px;
+  width: 110px;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(212, 175, 55, 0.15),
+    rgba(163, 122, 58, 0.28),
     transparent
   );
   margin: 0 auto 1.5rem;
 }
 
 .footer-text {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  letter-spacing: 0.2em;
+  font-family: "Ma Shan Zheng", "STKaiti", cursive;
+  font-size: 0.88rem;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.25em;
+  font-weight: 400;
 }
 
 .footer-sub {
-  font-size: 0.7rem;
-  color: rgba(180, 160, 120, 0.3);
-  margin-top: 0.5rem;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  color: var(--color-ink-mute);
+  margin-top: 0.6rem;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+  font-style: italic;
 }
 
 /* 响应式 */
 @media (max-width: 640px) {
   .shrine-content {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
   }
 
   .shrine-title {
-    font-size: 2.4rem;
-    letter-spacing: 0.2em;
+    font-size: 2.3rem;
+    letter-spacing: 0.25em;
   }
 
   .hall-frame {
-    padding: 1.5rem 1rem;
+    padding: 2rem 1rem 1.75rem;
   }
 
   .tablet-inner {
-    width: 180px;
-    min-height: 230px;
+    width: 188px;
+    min-height: 240px;
+    padding: 1.75rem 1rem;
   }
 
   .tablet-center-char {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 
   .title-name {
-    font-size: 1.8rem;
+    font-size: 1.55rem;
   }
 
   .quote-text {
-    font-size: 1.2rem;
+    font-size: 1.18rem;
   }
 }
 </style>
