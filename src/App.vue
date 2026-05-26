@@ -88,6 +88,11 @@ onMounted(() => {
     <div class="shrine-content">
       <!-- 祠门 -->
       <header class="shrine-header">
+        <div class="header-seal">
+          <span class="seal-line"></span>
+          <span class="seal-mark">壹</span>
+          <span class="seal-line"></span>
+        </div>
         <h1 class="shrine-title">
           <span class="title-char" style="--i: 0">赛</span>
           <span class="title-char" style="--i: 1">博</span>
@@ -110,7 +115,6 @@ onMounted(() => {
           <div class="spirit-tablet-section">
             <div class="tablet-frame">
               <div class="tablet-inner">
-                <div class="tablet-top-ornament"></div>
                 <div class="tablet-body">
                   <div class="tablet-header">漢 丞 相 武 鄉 侯</div>
                   <div class="tablet-center-char">忠武</div>
@@ -432,6 +436,10 @@ body {
   position: relative;
 }
 
+.title-char:nth-child(3) {
+  color: var(--color-gold);
+}
+
 @keyframes titleCharIn {
   0% {
     opacity: 0;
@@ -590,7 +598,6 @@ body {
   font-family: "Ma Shan Zheng", "STKaiti", cursive;
   font-size: 3.6rem;
   color: var(--color-cinnabar);
-  letter-spacing: 0.25em;
   line-height: 1.2;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   animation: tabletGlow 5s ease-in-out infinite;
