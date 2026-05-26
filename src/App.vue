@@ -618,7 +618,7 @@ body {
 
 /* 名句区 */
 .quote-section {
-  max-width: 460px;
+  max-width: 660px;
   margin: 0 auto;
   min-height: 100px;
   display: flex;
