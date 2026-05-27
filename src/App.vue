@@ -88,11 +88,6 @@ onMounted(() => {
     <div class="shrine-content">
       <!-- 祠门 -->
       <header class="shrine-header">
-        <div class="header-seal">
-          <span class="seal-line"></span>
-          <span class="seal-mark">壹</span>
-          <span class="seal-line"></span>
-        </div>
         <h1 class="shrine-title">
           <span class="title-char" style="--i: 0">赛</span>
           <span class="title-char" style="--i: 1">博</span>
@@ -100,7 +95,6 @@ onMounted(() => {
           <span class="title-char" style="--i: 3">侯</span>
           <span class="title-char" style="--i: 4">祠</span>
         </h1>
-        <p class="shrine-subtitle">千古风流&nbsp;&nbsp;精神永存</p>
       </header>
 
       <!-- 武侯殿 -->
